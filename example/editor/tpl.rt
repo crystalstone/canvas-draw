@@ -1,0 +1,48 @@
+<rt-import name="*" as="Select" from="antd/lib/select"/>
+<rt-import name="*" as="InputNumber" from="antd/lib/input-number"/>
+<rt-import name="*" as="Row" from="antd/lib/row"/>
+<rt-import name="*" as="Col" from="antd/lib/col"/>
+<rt-import name="*" as="Button" from="antd/lib/button"/>
+
+<div class="editor-container">
+  <div class="attribute">
+    <Row>
+      <Col span={10}>shape <span class="must">*</span></Col>
+      <Col span={14}>
+        <Select
+          style="width:120px"
+          value="{this.state.shape}"
+          onChange="{(e) => {this.change('shape', e)}}"
+          >
+          <Select.Option value='Polygon'>
+            Polygon
+          </Select.Option>
+        </Select>
+      </Col>
+    </Row>
+    <Row>
+      <Col span={10}>label type <span class="must">*</span></Col>
+      <Col span={14}>
+        <Select
+          style="width:120px"
+          value="{this.state.labelType}"
+          onChange="{(e) => {this.change('labelType', e)}}"
+          >
+          <Select.Option value='Person'>
+            Person
+          </Select.Option>
+          <Select.Option value='Police'>
+            Police
+          </Select.Option>
+        </Select>
+      </Col>
+    </Row>
+    <Row>
+      <Col span={12}>
+
+      </Col>
+      <Col span={12}>
+        
+      </Col>
+    </Row>
+</div>
