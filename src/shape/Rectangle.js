@@ -23,8 +23,60 @@ export default class Rectangle extends BaseShape {
       this.geojson.geometry.imgcoordinates = imgcoordinates
       let nodes = this.img2canvasxy(imgcoordinates, this.getImg2canvasRatio())
       this.geojson.geometry.coordinates = [nodes[0]]
-      this.generateCoordinates(nodes[1])
+      this.generateCoordinates(nodes[0], nodes[1])
     }
+  }
+
+  /**
+  * drag a node of the feature
+  * @param {Array} point point
+  */
+  drag (point) {
+    setTimeout(() => {
+      if (!this.drapPoint) {
+        this.drapPoint = this.checkPointOnNode(point)
+      }
+
+      if (this.drapPoint && this.geojson && this.geojson.geometry &&
+        this.geojson.geometry.coordinates[this.drapPoint.index]) {
+          let index = this.drapPoint.index
+          let transformPoint = Util.screen2canvasxy(point, this.ctx.canvas)
+          if (!(index % 2)) { // corner point
+            let firstPoint = index - 4 >= 0 ? this.geojson.geometry.coordinates[index - 4]
+              : this.geojson.geometry.coordinates[index + 4]
+            let thirdPoint = transformPoint
+            this.drapPoint = { // must change
+              index: 4,
+              node: thirdPoint
+            }
+            this.generateCoordinates(firstPoint, thirdPoint)
+          } else { // line point drag
+            let point1 = this.geojson.geometry.coordinates[index - 1]
+            let point2 = index + 1 > 7 ? this.geojson.geometry.coordinates[0]
+              : this.geojson.geometry.coordinates[index + 1]
+            this.geojson.geometry.coordinates[this.drapPoint.index]
+
+            if (Math.abs(point1[0] - point2[0]) > Math.abs(point1[1] - point2[1])) { // y equal
+              point1[1] = point2[1] = this.geojson.geometry.coordinates[this.drapPoint.index][1] = transformPoint[1]
+            } else { // x equql
+              point1[0] = point2[0] = this.geojson.geometry.coordinates[this.drapPoint.index][0] = transformPoint[0]
+            }
+
+            this.generateCoordinates(
+              this.geojson.geometry.coordinates[0],
+              this.geojson.geometry.coordinates[4]
+            )
+
+          }
+      }
+    }, 0)
+  }
+
+  /**
+  * stop drag
+  */
+  stopDrag () {
+    this.drapPoint = null
   }
 
   /**
@@ -39,10 +91,11 @@ export default class Rectangle extends BaseShape {
 
   /**
   * generate 4 points for rectangle
+  * @param {Array} firstPoint the first point
   * @param {Array} thirdPoint the third point
   */
-  generateCoordinates (thirdPoint) {
-    let firstPoint = this.geojson.geometry.coordinates[0]
+  generateCoordinates (firstPoint, thirdPoint) {
+    // let firstPoint = this.geojson.geometry.coordinates[0]
     if (firstPoint && firstPoint.length === 2 && thirdPoint && thirdPoint.length === 2) {
       let isSameDireaction = true
       let point1 = null
@@ -58,7 +111,8 @@ export default class Rectangle extends BaseShape {
         [thirdPoint[0] - firstPoint[0], thirdPoint[1] - firstPoint[1]]
       )
 
-      let c = Math.sqrt(Math.pow((thirdPoint[0] - firstPoint[0]), 2) + Math.pow((thirdPoint[1] - firstPoint[1]), 2))
+      let c = Math.sqrt(Math.pow((thirdPoint[0] - firstPoint[0]), 2) +
+        Math.pow((thirdPoint[1] - firstPoint[1]), 2))
 
       if (angle > 90) {
         angle = 180 - angle
@@ -92,7 +146,8 @@ export default class Rectangle extends BaseShape {
       ]
 
       this.geojson.geometry.coordinates = nodes
-      this.geojson.geometry.imgcoordinates = Util.canvas2imgxy(nodes, this.getImg2canvasRatio())
+      let transNodes = Util.canvas2imgxy(nodes, this.getImg2canvasRatio())
+      this.geojson.geometry.imgcoordinates = [transNodes[0], transNodes[4]]
     }
   }
 
@@ -103,7 +158,7 @@ export default class Rectangle extends BaseShape {
   setTempPoint (point) {
     if (point) {
       this.tempPoint = Util.screen2canvasxy(point, this.ctx.canvas)
-      this.generateCoordinates(this.tempPoint)
+      this.generateCoordinates(this.geojson.geometry.coordinates[0], this.tempPoint)
     } else {
       this.tempPoint = null
     }
@@ -117,7 +172,7 @@ export default class Rectangle extends BaseShape {
     let transformPoint = Util.screen2canvasxy(point, this.ctx.canvas)
     // if the point is not equal the last point, then add it
     if (this.geojson.geometry.coordinates.length > 0) {
-      this.generateCoordinates(transformPoint)
+      this.generateCoordinates(this.geojson.geometry.coordinates[0], transformPoint)
     } else {
       this.geojson.geometry.coordinates.push(transformPoint)
     }
