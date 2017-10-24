@@ -91,21 +91,48 @@ export default {
   * @param {Array} coordinates
   */
   checkPointPolygon: function (point, coordinates) {
-    // Ray algorithm
-    if (point && point.length && point.length === 2) {
-      let crossNum = 0
-      for (let i = 0, len = coordinates.length - 1; i < len; i++) {
-        let slope = (coordinates[i + 1][1] - coordinates[i][1]) / (coordinates[i + 1][0] - coordinates[i][0])
-        let condition1 = (coordinates[i][0] <= point[0]) && (point[0] < coordinates[i + 1][0])
-        let condition2 = (coordinates[i][0] > point[0]) && (point[0] >= coordinates[i + 1][0])
-        let above = point[1] < slope * (point[0] - coordinates[i][0]) + coordinates[i][1]
-
-        if ((condition1 || condition2) && above) {
-          ++crossNum
-        }
-      }
-      return (crossNum % 2 !== 0)
+    let len = coordinates.length
+    let w = 0
+    for (let i = 0, j = len - 1; i < len; i++) {
+      let x0 = coordinates[j][0]
+      let y0 = coordinates[j][1]
+      let x1 = coordinates[i][0]
+      let y1 = coordinates[i][1]
+      w += this.windingLine(x0, y0, x1, y1, point[0], point[1])
+      j = i
     }
-    return false
+    return w !== 0
+
+    // Ray algorithm
+    // if (point && point.length && point.length === 2) {
+    //   let crossNum = 0
+    //   for (let i = 0, len = coordinates.length - 1; i < len; i++) {
+    //     let slope = (coordinates[i + 1][1] - coordinates[i][1]) / (coordinates[i + 1][0] - coordinates[i][0])
+    //     let condition1 = (coordinates[i][0] <= point[0]) && (point[0] < coordinates[i + 1][0])
+    //     let condition2 = (coordinates[i][0] > point[0]) && (point[0] >= coordinates[i + 1][0])
+    //     let above = point[1] < slope * (point[0] - coordinates[i][0]) + coordinates[i][1]
+    //
+    //     if ((condition1 || condition2) && above) {
+    //       ++crossNum
+    //     }
+    //   }
+    //   return (crossNum % 2 !== 0)
+    // }
+    // return false
+  },
+
+  windingLine: function (x0, y0, x1, y1, x, y) {
+    // x = x * DEFAULT_PIXEL_RATIO
+    // y = y * DEFAULT_PIXEL_RATIO
+    if ((y > y0 && y > y1) || (y < y0 && y < y1)) {
+      return 0
+    }
+    if (y1 == y0) {
+      return 0
+    }
+    var dir = y1 < y0 ? 1 : -1
+    var t = (y - y0) / (y1 - y0)
+    var x_ = t * (x1 - x0) + x0
+    return x_ > x ? dir : 0
   }
 }

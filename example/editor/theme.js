@@ -53,7 +53,31 @@ export default {
     }
   },
   Rectangle: {
-    Person: null,
+    Person: {
+      label: 'Person',
+      showLabel: true,
+      showPointLabel: true,
+      fontStyle: {
+        fillColor: '#fff'
+      },
+      baseStyle: {
+        strokeColor: 'rgba(255, 105, 255, 0.8)',
+        lineWidth: 1,
+        lineCap: 'round',
+        lineJoin: 'round'
+      },
+      hoverStyle: {
+        fillColor: null,
+        strokeColor: 'rgba(255, 105, 255, 1)',
+        lineWidth: 2
+      },
+      selectedStyle: {
+        fillColor: null,
+        strokeColor: '#fff',
+        lineDashOffset: 0,
+        lineDash: [10, 4]
+      }
+    },
     Police: null
   }
 }
