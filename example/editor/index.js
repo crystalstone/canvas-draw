@@ -15,6 +15,8 @@ export default class App extends Component {
 
     this.state = {
       shape: '-1',
+      label: 'show',
+      pointLabel: 'show',
       filter: '-1',
       labelType: 'Person'
     }
@@ -30,12 +32,46 @@ export default class App extends Component {
       if (this.state.shape == -1) {
         hope && hope.changeModel(null)
       } else {
+        let conf = Theme[this.state.shape][this.state.labelType] || {}
+        conf.showLabel = this.state.label === 'show' ? true : false
+        conf.showPointLabel = this.state.pointLabel === 'show' ? true : false
+
         hope && hope.changeModel(
           this.state.shape,
           Theme[this.state.shape][this.state.labelType]
         )
       }
     })
+  }
+
+  /**
+  * label 是不是显示
+  */
+  changeLabel (v) {
+    this.setState({
+      label: v
+    })
+
+    hope.changePorprities({
+      key: 'showLabel',
+      opt: 'in',
+      value: [true, false]
+    }, 'showLabel', (v === 'show' ? true : false))
+  }
+
+  /**
+  * pointLabel 是不是显示
+  */
+  changepointLabel (v) {
+    this.setState({
+      pointLabel: v
+    })
+
+    hope.changePorprities({
+      key: 'showPointLabel',
+      opt: 'in',
+      value: [true, false]
+    }, 'showPointLabel', (v === 'show' ? true : false))
   }
 
   changeFilter (v) {

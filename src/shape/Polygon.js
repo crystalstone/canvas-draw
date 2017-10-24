@@ -6,8 +6,8 @@ import Util from '../util/util'
 import BaseShape from './base'
 
 export default class Polygon extends BaseShape {
-  constructor (ctx, properties, coordinates) {
-    super(ctx, properties, coordinates)
+  constructor (ctx, properties, imgcoordinates) {
+    super(ctx, properties, imgcoordinates)
 
     this.uuid = `Polygon_${(new Date()).getTime()}`
     this.geojson = {
@@ -15,7 +15,8 @@ export default class Polygon extends BaseShape {
       properties: Object.assign({}, properties),
       geometry: {
         type: 'Polygon',
-        coordinates: coordinates || []
+        imgcoordinates: imgcoordinates || [],
+        coordinates: Util.img2canvasxy(imgcoordinates, this.getImg2canvasRatio()) || []
       }
     }
   }
@@ -45,7 +46,7 @@ export default class Polygon extends BaseShape {
     // 画圆圈
     coordinate && coordinate.forEach(item => {
       this.ctx.beginPath()
-      this.ctx.arc(item[0], item[1], 5, 0, 2 * Math.PI)
+      this.ctx.arc(item[0], item[1], 3, 0, 2 * Math.PI)
       this.ctx.fillStyle = this.selectedStyle && this.selectedStyle.strokeColor ||
         this.selectedStyle && this.selectedStyle.fillColor
       this.ctx.fill()

@@ -6,18 +6,24 @@ import Util from '../util/util'
 import BaseShape from './base'
 
 export default class Rectangle extends BaseShape {
-  constructor (ctx, properties, coordinates) {
-    super(ctx, properties, coordinates)
-
-    this.baseVector = [1, 0]
+  constructor (ctx, properties, imgcoordinates) {
+    super(ctx, properties, imgcoordinates)
     this.uuid = `Rectangle_${(new Date()).getTime()}`
     this.geojson = {
       type: 'Feature',
       properties: Object.assign({}, properties),
       geometry: {
         type: 'Rectangle',
-        coordinates: coordinates || []
+        imgcoordinates: [],
+        coordinates: []
       }
+    }
+
+    if (imgcoordinates && imgcoordinates.length) {
+      this.geojson.geometry.imgcoordinates = imgcoordinates
+      let nodes = this.img2canvasxy(imgcoordinates, this.getImg2canvasRatio())
+      this.geojson.geometry.coordinates = [nodes[0]]
+      this.generateCoordinates(nodes[1])
     }
   }
 
@@ -43,19 +49,28 @@ export default class Rectangle extends BaseShape {
       let point2 = null
 
       let angle = Util.AngleBetween2Vector(
-        this.baseVector,
+        [1, 0],
+        [thirdPoint[0] - firstPoint[0], thirdPoint[1] - firstPoint[1]]
+      )
+
+      let vangle = Util.AngleBetween2Vector(
+        [0, 1],
         [thirdPoint[0] - firstPoint[0], thirdPoint[1] - firstPoint[1]]
       )
 
       let c = Math.sqrt(Math.pow((thirdPoint[0] - firstPoint[0]), 2) + Math.pow((thirdPoint[1] - firstPoint[1]), 2))
 
       if (angle > 90) {
-        angle = angle - 90
+        angle = 180 - angle
         isSameDireaction = false
       }
 
       let width = c * Math.cos(Math.PI / 180 * angle)
       let height = c * Math.sin(Math.PI / 180 * angle)
+
+      if (vangle > 90) {
+        height = height * -1
+      }
 
       if (isSameDireaction) {
         point1 = [(firstPoint[0] + width), firstPoint[1]]
@@ -65,12 +80,19 @@ export default class Rectangle extends BaseShape {
         point2 = [firstPoint[0], (firstPoint[1] + height)]
       }
 
-      this.geojson.geometry.coordinates = [
+      let nodes = [
         firstPoint,
+        [(firstPoint[0] + point1[0]) / 2, (firstPoint[1] + point1[1]) / 2],
         point1,
+        [(thirdPoint[0] + point1[0]) / 2, (thirdPoint[1] + point1[1]) / 2],
         thirdPoint,
-        point2
+        [(thirdPoint[0] + point2[0]) / 2, (thirdPoint[1] + point2[1]) / 2],
+        point2,
+        [(firstPoint[0] + point2[0]) / 2, (firstPoint[1] + point2[1]) / 2]
       ]
+
+      this.geojson.geometry.coordinates = nodes
+      this.geojson.geometry.imgcoordinates = Util.canvas2imgxy(nodes, this.getImg2canvasRatio())
     }
   }
 
@@ -111,12 +133,20 @@ export default class Rectangle extends BaseShape {
     let coordinate = this.geojson.geometry.coordinates || []
 
     // 画圆圈
-    coordinate && coordinate.forEach(item => {
+    coordinate && coordinate.forEach((item, index) => {
       this.ctx.beginPath()
-      this.ctx.arc(item[0], item[1], 5, 0, 2 * Math.PI)
-      this.ctx.fillStyle = this.selectedStyle && this.selectedStyle.strokeColor ||
-        this.selectedStyle && this.selectedStyle.fillColor
-      this.ctx.fill()
+
+      if (index % 2) {
+        this.ctx.rect(item[0] - 4, item[1] - 4, 8, 8)
+        this.ctx.fillStyle = this.selectedStyle && this.selectedStyle.strokeColor ||
+          this.selectedStyle && this.selectedStyle.fillColor
+        this.ctx.fill()
+      } else {
+        this.ctx.arc(item[0], item[1], 3, 0, 2 * Math.PI)
+        this.ctx.fillStyle = this.selectedStyle && this.selectedStyle.strokeColor ||
+          this.selectedStyle && this.selectedStyle.fillColor
+        this.ctx.fill()
+      }
     })
     this.ctx.closePath()
   }

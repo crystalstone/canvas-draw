@@ -160,13 +160,27 @@ export default class Hope {
     if (Object.prototype.toString.call(feature) === '[object Array]') {
       feature && feature.length && feature.forEach(item => {
         if (item.type && CANVAS_MOEL[item.type]) {
-          let newFeature = new CANVAS_MOEL[item.type](this.ctx, item.properties || {}, item.coordinate || [])
+          let newFeature = new CANVAS_MOEL[item.type](
+            {
+              ctx: this.ctx,
+              img: this.img
+            },
+            item.properties || {},
+            item.coordinate || []
+          )
           this.featureList[newFeature.uuid] = newFeature
         }
       })
     } else {
       if (feature.type && CANVAS_MOEL[feature.type]) {
-        let newFeature = new CANVAS_MOEL[feature.type](this.ctx, feature.properties || {}, feature.coordinate || [])
+        let newFeature = new CANVAS_MOEL[feature.type](
+          {
+            ctx: this.ctx,
+            img: this.img
+          },
+          feature.properties || {},
+          feature.coordinate || []
+        )
         this.featureList[newFeature.uuid] = newFeature
       }
     }
@@ -234,7 +248,13 @@ export default class Hope {
         break
       case 'prepared': // add a new feature
         this.optState = 'drawing'
-        let feature = this.currentFeature = new CANVAS_MOEL[this.model.type](this.ctx, this.model.options)
+        let feature = this.currentFeature = new CANVAS_MOEL[this.model.type](
+          {
+            ctx: this.ctx,
+            img: this.img
+          },
+          this.model.options
+        )
         feature.addPoint([
           e.pageX,
           e.pageY
@@ -374,10 +394,9 @@ export default class Hope {
   * render again
   */
   reRender () {
-    console.log('ren')
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     for (let key in this.featureList) {
-      if (this.featureList.hasOwnProperty(key) && this.matchFilter(this.featureList[key])) {
+      if (this.featureList.hasOwnProperty(key) && this.matchFilter(this.featureList[key], this.filter)) {
         this.featureList[key].draw()
       }
     }
@@ -386,8 +405,9 @@ export default class Hope {
   /**
   * is match the filter
   * @param {Object} feature feature
+  * @param {Object} filter filter
   */
-  matchFilter (feature) {
+  matchFilter (feature, filter) {
     if (!this.filter) {
       return true
     }
@@ -438,6 +458,22 @@ export default class Hope {
     } else {
       this.filter = null
     }
+    this.reRender()
+  }
+
+  /**
+  * change properties
+  * @param {Object} filter filter
+  * @param {string} key key
+  * @param {string|number} value value
+  */
+  changePorprities (filter, propskey, value) {
+    for (let key in this.featureList) {
+      if (this.featureList.hasOwnProperty(key) && this.matchFilter(this.featureList[key], filter)) {
+        this.featureList[key].changePorprities(propskey, value)
+      }
+    }
+
     this.reRender()
   }
 

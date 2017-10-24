@@ -45,7 +45,7 @@
     </Row>
 
     <Row>
-      <Col span={10}>filter <span class="must">*</span></Col>
+      <Col span={10}>filter</Col>
       <Col span={14}>
         <Select
           style="width:120px"
@@ -64,6 +64,43 @@
         </Select>
       </Col>
     </Row>
+
+    <Row>
+      <Col span={10}>label</Col>
+      <Col span={14}>
+        <Select
+          style="width:120px"
+          value="{this.state.label}"
+          onChange="{(e) => {this.changeLabel(e)}}"
+          >
+          <Select.Option value='show'>
+            show
+          </Select.Option>
+          <Select.Option value='hide'>
+            hide
+          </Select.Option>
+        </Select>
+      </Col>
+    </Row>
+
+    <Row>
+      <Col span={10}>point-label</Col>
+      <Col span={14}>
+        <Select
+          style="width:120px"
+          value="{this.state.pointLabel}"
+          onChange="{(e) => {this.changepointLabel(e)}}"
+          >
+          <Select.Option value='show'>
+            show
+          </Select.Option>
+          <Select.Option value='hide'>
+            hide
+          </Select.Option>
+        </Select>
+      </Col>
+    </Row>
+
     <Row>
       <Col span={24}>
         <Button type="primary" onClick={this.save.bind(this)}>保存绘制元素</Button>

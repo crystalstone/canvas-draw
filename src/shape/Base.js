@@ -6,13 +6,29 @@ import Util from '../util/util'
 const ration = (typeof window !== 'undefined' && window.devicePixelRatio) || 1
 
 export default class BaseShape {
-  constructor (ctx, properties, coordinates) {
-    this.ctx = ctx
+  constructor (ctx, properties, imgcoordinates) {
+    this.ctx = ctx.ctx
+    this.img = ctx.img
+
     this.state = 'selected' // [show, selected, hover]
     this.tempPoint = null // for mouse move
     this.movePoint = null
     this.drapPoint = null
     this.props = properties || {}
+
+    this.changePorprities()
+  }
+
+  /**
+  * change properties
+  * @param {string} key string
+  * @param {string|number} v v
+  */
+  changePorprities (key, v) {
+    if (arguments.length === 2) {
+      this.props[key] = v
+    }
+
     this.fontStyle = Object.assign({}, {
       fillColor: '#ffffe0',
       font: '15px serif'
@@ -34,6 +50,17 @@ export default class BaseShape {
       lineDashOffset: 0,
       lineDash: [10, 4]
     })
+
+  }
+
+  /**
+  * getImg2canvasRatio
+  */
+  getImg2canvasRatio () {
+    return {
+      x: this.img.width / this.ctx.canvas.width,
+      y: this.img.height / this.ctx.canvas.height
+    }
   }
 
   /**
@@ -48,6 +75,10 @@ export default class BaseShape {
     if (this.drapPoint && this.geojson && this.geojson.geometry &&
       this.geojson.geometry.coordinates[this.drapPoint.index]) {
       this.geojson.geometry.coordinates[this.drapPoint.index] = Util.screen2canvasxy(point, this.ctx.canvas)
+      this.geojson.geometry.imgcoordinates[this.drapPoint.index] = Util.canvas2imgxy(
+        this.geojson.geometry.coordinates[this.drapPoint.index],
+        this.getImg2canvasRatio()
+      )
     }
   }
 
@@ -84,6 +115,10 @@ export default class BaseShape {
   * stop move the feature
   */
   stopMove () {
+    this.geojson.geometry.imgcoordinates = Util.canvas2imgxy(
+      this.geojson.geometry.coordinates,
+      this.getImg2canvasRatio()
+    )
     this.movePoint = null
   }
 
@@ -117,6 +152,7 @@ export default class BaseShape {
     // if the point is not equal the last point, then add it
     if (!(lastPoint && transformPoint && transformPoint[0] === lastPoint[0] && transformPoint[1] === lastPoint[1])) {
       this.geojson.geometry.coordinates.push(transformPoint)
+      this.geojson.geometry.imgcoordinates.push(Util.canvas2imgxy(transformPoint, this.getImg2canvasRatio()))
     }
   }
 
@@ -129,7 +165,7 @@ export default class BaseShape {
 
     for (let i = 0, len = this.geojson.geometry.coordinates.length; i < len; i++) {
       let coordinate = this.geojson.geometry.coordinates[i]
-      if (Util.checkPointInCircle(transformPoint, coordinate, 5)) {
+      if (Util.checkPointInCircle(transformPoint, coordinate, 3)) {
         return {
           index: i,
           node: coordinate
@@ -225,6 +261,7 @@ export default class BaseShape {
   */
   drawOutline (showLabel) {
     let coordinate = this.geojson.geometry.coordinates || []
+    let imgcoordinate = this.geojson.geometry.imgcoordinates || []
     let center = [0, 0]
     if (coordinate && coordinate.length) {
       let point0 = coordinate[0]
@@ -238,7 +275,7 @@ export default class BaseShape {
       )
 
       if (this.props.showPointLabel && showLabel) {
-        this.drawText(this.fontStyle, `{x: ${point0[0]}, y: ${point0[1]}}`, [point0[0], point0[1]])
+        this.drawText(this.fontStyle, `{x: ${imgcoordinate[0][0]}, y: ${imgcoordinate[0][1]}}`, [point0[0], point0[1]])
       }
 
       for (var i = 1, len = coordinate.length; i < len; i++) {
@@ -248,7 +285,7 @@ export default class BaseShape {
           center[1] += point[1]
 
           if (this.props.showPointLabel && showLabel) {
-            this.drawText(this.fontStyle, `{x: ${point[0]}, y: ${point[1]}}`, [point[0], point[1]])
+            this.drawText(this.fontStyle, `{x: ${imgcoordinate[i][0]}, y: ${imgcoordinate[i][1]}}`, [point[0], point[1]])
           }
 
           this.ctx.lineTo(point[0], point[1])

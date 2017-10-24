@@ -9,6 +9,56 @@ export default {
   },
 
   /**
+  * canvas xy 2 img xy
+  * @param {Array} point point [x, y]
+  * @param {Object} ratio ratio
+  */
+  canvas2imgxy: function (point, ratio) {
+    if (point && point.length) {
+      if (Object.prototype.toString.call(point[0]) === '[object Array]') {
+        let points = []
+        point.forEach(item => {
+          points.push([
+            Math.round(item[0] * ratio.x),
+            Math.round(item[1] * ratio.y)
+          ])
+        })
+        return points
+      }
+      return [
+        Math.round(point[0] * ratio.x),
+        Math.round(point[1] * ratio.y)
+      ]
+    }
+    return point
+  },
+
+  /**
+  * img xy 2 canvas xy
+  * @param {Array} point point [x, y]
+  * @param {Object} ratio ratio
+  */
+  img2canvasxy: function (point, ratio) {
+    if (point && point.length) {
+      if (Object.prototype.toString.call(point[0]) === '[object Array]') {
+        let points = []
+        point.forEach(item => {
+          points.push([
+            Math.round(item[0] / ratio.x),
+            Math.round(item[1] / ratio.y)
+          ])
+        })
+        return points
+      }
+      return [
+        Math.round(point[0] / ratio.x),
+        Math.round(point[1] / ratio.y)
+      ]
+    }
+    return point
+  },
+
+  /**
   * transform screen xy 2 canvas xy
   * @param {Array} point point [x, y]
   * @param {Object} canvas canvas
