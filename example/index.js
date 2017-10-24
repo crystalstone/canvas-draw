@@ -1,14 +1,22 @@
 import Hope from 'Hope'
 import './style.less'
+import axios from 'axios'
+window.http = axios.create({
+  baseURL: '/api/',
+  timeout: 3000,
+  headers: {
+    'x-requested-with': 'XMLHttpRequest'
+  }
+})
+
 
 let hope = window.hope = new Hope(
   'root', // canvas container id
-  {
-    showAxis: false // show or hide axis
-  }
 )
 
-hope.loadImg('/img/002.jpg')
+hope.loadImg('/img/002.jpg', () => {
+  // load 这个图片上的数据
+})
 
 
 

@@ -14,8 +14,14 @@
           value="{this.state.shape}"
           onChange="{(e) => {this.change('shape', e)}}"
           >
+          <Select.Option value='-1'>
+            请选择
+          </Select.Option>
           <Select.Option value='Polygon'>
             Polygon
+          </Select.Option>
+          <Select.Option value='Rectangle'>
+            Rectangle
           </Select.Option>
         </Select>
       </Col>
@@ -37,12 +43,35 @@
         </Select>
       </Col>
     </Row>
-    <Row>
-      <Col span={12}>
 
+    <Row>
+      <Col span={10}>filter <span class="must">*</span></Col>
+      <Col span={14}>
+        <Select
+          style="width:120px"
+          value="{this.state.filter}"
+          onChange="{(e) => {this.changeFilter(e)}}"
+          >
+          <Select.Option value='-1'>
+            请选择
+          </Select.Option>
+          <Select.Option value='Person'>
+            Person
+          </Select.Option>
+          <Select.Option value='Police'>
+            Police
+          </Select.Option>
+        </Select>
       </Col>
-      <Col span={12}>
-        
+    </Row>
+    <Row>
+      <Col span={24}>
+        <Button type="primary" onClick={this.save.bind(this)}>保存绘制元素</Button>
+      </Col>
+    </Row>
+    <Row>
+      <Col span={24}>
+        <Button type="primary" onClick={this.delete.bind(this)}>删除选中元素</Button>
       </Col>
     </Row>
 </div>

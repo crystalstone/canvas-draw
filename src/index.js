@@ -4,10 +4,14 @@
  */
 
 import Polygon from './shape/Polygon'
+import Rectangle from './shape/Rectangle'
+import EventEmit from 'event-emitter'
+
 // device pixel
 const ration = (typeof window !== 'undefined' && window.devicePixelRatio) || 1
 const CANVAS_MOEL = {
-  'Polygon': Polygon
+  'Polygon': Polygon,
+  'Rectangle': Rectangle
 }
 
 export default class Hope {
@@ -36,7 +40,8 @@ export default class Hope {
 
       this.featureList = {}
       this.currentFeature = null
-
+      this.filter = null
+      this.hoverFeatureUuid = null
       // this.options.width = this.options.width * this.options.ration
       // this.options.height = this.options.height * this.options.ration
 
@@ -59,7 +64,6 @@ export default class Hope {
   */
   initContext () {
     let canvas = document.createElement('canvas')
-    let imgCanvas = document.createElement('canvas')
     canvas.width = this.options.width
     canvas.height = this.options.height
     canvas.style.position = 'absolute'
@@ -67,34 +71,38 @@ export default class Hope {
     canvas.style.left = '0px'
     canvas.id = `${(new Date()).getTime()}_draw_canvas`
 
-    imgCanvas.width = this.options.width
-    imgCanvas.height = this.options.height
-    imgCanvas.style.position = 'absolute'
-    imgCanvas.style.top = '0px'
-    imgCanvas.style.left = '0px'
-    imgCanvas.id = `${(new Date()).getTime()}_img_canvas`
-
     this.container.style.position = 'relative'
-
-    this.container && this.container.appendChild(imgCanvas)
     this.container && this.container.appendChild(canvas)
-
     this.canvas = canvas
-    this.imgCanvas = imgCanvas
     this.ctx = this.canvas.getContext('2d')
-    this.imgCtx = this.imgCanvas.getContext('2d')
   }
 
   /**
   * add img to canvas
   * @param {string} imgUrl img url
+  * @param {Function} cb cb
   */
-  loadImg (imgUrl) {
+  loadImg (imgUrl, cb) {
+    this.img = null
     if (imgUrl) {
       let img = new Image()
       img.src = imgUrl
       img.onload = () => {
+        if (!this.imgCtx) {
+          let imgCanvas = document.createElement('canvas')
+          imgCanvas.width = this.options.width
+          imgCanvas.height = this.options.height
+          imgCanvas.style.position = 'absolute'
+          imgCanvas.style.top = '0px'
+          imgCanvas.style.left = '0px'
+          imgCanvas.id = `${(new Date()).getTime()}_img_canvas`
+          this.container && this.container.insertBefore(imgCanvas, this.canvas)
+          this.imgCanvas = imgCanvas
+          this.img = img
+          this.imgCtx = this.imgCanvas.getContext('2d')
+        }
         this.imgCtx.drawImage(img, 0, 0, this.imgCanvas.width, this.imgCanvas.height)
+        cb && cb()
       }
 
     } else {
@@ -128,7 +136,42 @@ export default class Hope {
   */
   changeOptState (type) {
     this.optState = type
-    // TODO: MOUSE TYPE
+  }
+
+  /**
+  * delete a feature
+  * @param {Object} feature feature
+  */
+  deleteFeature (feature) {
+    if (feature && feature.uuid) {
+      delete this.featureList[feature.uuid]
+      this.reRender()
+    }
+  }
+
+  /**
+  * add feature
+  * @param {Array|Object} feature feature
+  */
+  addFeature (feature) {
+    if (!this.img) {
+      console.error('img is not prepared or loaded, please addfeature after load img')
+    }
+    if (Object.prototype.toString.call(feature) === '[object Array]') {
+      feature && feature.length && feature.forEach(item => {
+        if (item.type && CANVAS_MOEL[item.type]) {
+          let newFeature = new CANVAS_MOEL[item.type](this.ctx, item.properties || {}, item.coordinate || [])
+          this.featureList[newFeature.uuid] = newFeature
+        }
+      })
+    } else {
+      if (feature.type && CANVAS_MOEL[feature.type]) {
+        let newFeature = new CANVAS_MOEL[feature.type](this.ctx, feature.properties || {}, feature.coordinate || [])
+        this.featureList[newFeature.uuid] = newFeature
+      }
+    }
+
+    this.reRender()
   }
 
   /**
@@ -138,6 +181,37 @@ export default class Hope {
     this.container.addEventListener('click', (e) => { this.clickHandler(e) })
     this.container.addEventListener('dblclick', (e) => { this.dblclickHandler(e) })
     this.container.addEventListener('mousemove', (e) => { this.mouseMoveHandler(e) })
+    document.addEventListener('keydown', (e) => { this.onkeydownHandler(e) })
+  }
+
+  /**
+  * key down handler
+  * @param {Object} e event
+  */
+  onkeydownHandler (e) {
+    if (e && e.keyCode === 27 && this.optState === 'editing') { // exit drawing or editing
+      this.currentFeature && this.currentFeature.changeState('show')
+      this.reRender()
+      this.emit('finish', this.currentFeature.uuid)
+
+      if (this.model) {
+        this.changeOptState('prepared')
+      } else {
+        this.changeOptState('prepareing')
+      }
+      this.currentFeature = null
+    }
+
+    if (e && e.keyCode === 67 && this.optState === 'drawing') { // c 67 cancel
+      this.deleteFeature(this.currentFeature)
+      this.currentFeature = null
+      this.reRender()
+      if (this.model) {
+        this.changeOptState('prepared')
+      } else {
+        this.changeOptState('prepareing')
+      }
+    }
   }
 
   /**
@@ -146,6 +220,18 @@ export default class Hope {
   */
   clickHandler (e) {
     switch (this.optState) {
+      case 'prepareing': // selected a feature
+        for (let key in this.featureList) {
+          if (this.featureList.hasOwnProperty(key) &&
+            this.featureList[key].checkPointInside([e.pageX, e.pageY])) {
+            this.currentFeature = this.featureList[key]
+            this.featureList[key].changeState('selected')
+            this.optState = 'editing'
+            break
+          }
+        }
+        this.reRender()
+        break
       case 'prepared': // add a new feature
         this.optState = 'drawing'
         let feature = this.currentFeature = new CANVAS_MOEL[this.model.type](this.ctx, this.model.options)
@@ -164,6 +250,7 @@ export default class Hope {
         this.reRender()
         break
       default:
+        break
     }
   }
 
@@ -172,10 +259,19 @@ export default class Hope {
   * @param {Object} e event
   */
   dblclickHandler (e) {
-    this.currentFeature && this.currentFeature.setTempPoint(null)
-    this.currentFeature && this.currentFeature.changeState('show')
-    this.reRender()
-    this.changeOptState('prepared') // exit drawing
+    switch (this.optState) {
+      case 'prepareing': // selected a feature
+        break
+      case 'prepared': // add a new feature
+        break
+      case 'drawing':
+        this.changeOptState('editing')
+      case 'editing': // drawing feature
+        this.currentFeature && this.currentFeature.setTempPoint(null)
+        break
+      default:
+        break
+    }
   }
 
   /**
@@ -183,26 +279,61 @@ export default class Hope {
   * @param {Object} e event
   */
   mouseMoveHandler (e) {
-    switch (this.optState) {
-      case 'prepareing':
-      case 'prepared':
-        this.hoverRender(e)
-        break
-      case 'drawing': // drawing feature
-        if (this.currentFeature) {
-          this.currentFeature.setTempPoint([
-              e.pageX,
-              e.pageY
-          ])
-          this.reRender()
-        }
-        break
-      default:
-    }
+    setTimeout(() => {
+      switch (this.optState) {
+        case 'prepareing':
+        case 'prepared':
+          this.hoverRender(e)
+          break
+        case 'drawing': // drawing feature
+          if (this.currentFeature) {
+            this.currentFeature.setTempPoint([
+                e.pageX,
+                e.pageY
+            ])
+            this.reRender()
+          }
+          break
+        case 'editing': // editing feature
+          if (this.currentFeature) {
+            if (this.currentFeature.drapPoint || this.currentFeature.checkPointOnNode([e.pageX, e.pageY])) {
+              this.container.style.cursor = 'crosshair'
+              if (e.buttons === 1) {
+                this.currentFeature.drag([e.pageX, e.pageY])
+                this.reRender()
+              } else {
+                this.currentFeature.stopDrag()
+              }
+              return
+            }
+
+            let isInside = this.currentFeature.checkPointInside([e.pageX, e.pageY])
+            if (isInside) {
+              this.container.style.cursor = 'move'
+              if (e.buttons === 1) {
+                this.currentFeature.move([e.pageX, e.pageY])
+                this.reRender()
+              } else {
+                this.currentFeature.stopMove()
+              }
+              return
+            }
+
+            if (this.model) {
+              this.container.style.cursor = 'auto'
+            } else {
+              this.container.style.cursor = 'pointer'
+            }
+          }
+          break
+        default:
+      }
+    }, 0)
   }
 
   /**
   * hover render
+  * @param {Object} e event
   */
   hoverRender (e) {
     let hoverFeatureUuid = null
@@ -211,6 +342,16 @@ export default class Hope {
         this.featureList[key].checkPointInside([e.pageX, e.pageY])) {
         hoverFeatureUuid = key
         break
+      }
+    }
+
+    if (hoverFeatureUuid) {
+      this.container.style.cursor = 'move'
+    } else {
+      if (this.model) {
+        this.container.style.cursor = 'auto'
+      } else {
+        this.container.style.cursor = 'pointer'
       }
     }
 
@@ -223,19 +364,83 @@ export default class Hope {
       }
     }
 
-    this.reRender()
+    if (this.hoverFeatureUuid !== hoverFeatureUuid) {
+      this.reRender()
+      this.hoverFeatureUuid = hoverFeatureUuid
+    }
   }
 
   /**
   * render again
   */
   reRender () {
+    console.log('ren')
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     for (let key in this.featureList) {
-      if (this.featureList.hasOwnProperty(key)) {
+      if (this.featureList.hasOwnProperty(key) && this.matchFilter(this.featureList[key])) {
         this.featureList[key].draw()
       }
     }
   }
 
+  /**
+  * is match the filter
+  * @param {Object} feature feature
+  */
+  matchFilter (feature) {
+    if (!this.filter) {
+      return true
+    }
+    let v = feature.props[this.filter.key]
+    switch (this.filter.opt) {
+      case 'in':
+        let flag = false
+        this.filter.value && this.filter.value.forEach(item => {
+          if (item === v) {
+            flag = true
+          }
+        })
+        return flag
+        break
+      case 'not-in':
+        let flag1 = true
+        this.filter.value && this.filter.value.forEach(item => {
+          if (item === v) {
+            flag1 = false
+          }
+        })
+        return flag1
+        break
+      case 'equal':
+        return !!(feature.props[this.filter.key] === this.filter.value)
+        break
+      case 'not-equal':
+        return !!(feature.props[this.filter.key] !== this.filter.value)
+        break
+      default:
+        return true
+    }
+  }
+
+  /**
+  * set filter
+  * @param {string} key properties key
+  * @param {string} opt [in, not-in, equal, not-equal]
+  * @param {string|number} v key value
+  */
+  setFilter (key, opt, v) {
+    if (arguments.length === 3) {
+      this.filter = {
+        key,
+        opt,
+        value: v
+      }
+    } else {
+      this.filter = null
+    }
+    this.reRender()
+  }
+
 }
+
+EventEmit(Hope.prototype)
