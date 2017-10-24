@@ -1,5 +1,20 @@
 export default {
 
+  /**
+  * generate uuid
+  */
+  guid: function () {
+    function S4 () {
+      return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1)
+    }
+    return (S4() + S4() + '-' + S4() + '-' + S4() + '-' + S4() + '-' + S4() + S4() + S4())
+  },
+
+  /**
+  * get angel between 2vector
+  * @param {Array} v1 [x, y]
+  * @param {Array} v1 [x, y]
+  */
   AngleBetween2Vector: function (v1, v2) {
     let v1v2 = v1[0] * v2[0] + v1[1] * v2[1]
     let v1length = Math.sqrt(Math.pow(v1[0], 2) + Math.pow(v1[1], 2))

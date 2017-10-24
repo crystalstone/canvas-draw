@@ -18,12 +18,6 @@ let hope = window.hope = new Hope(
   }
 )
 
-hope.loadImg('/img/002.jpg', () => {
-  // load 这个图片上的数据
-})
-
-
-
 // for example
 import React from 'react'
 import ReactDOM from 'react-dom'

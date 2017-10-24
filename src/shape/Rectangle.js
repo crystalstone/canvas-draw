@@ -8,7 +8,7 @@ import BaseShape from './base'
 export default class Rectangle extends BaseShape {
   constructor (ctx, properties, imgcoordinates) {
     super(ctx, properties, imgcoordinates)
-    this.uuid = `Rectangle_${(new Date()).getTime()}`
+    this.uuid = `Rectangle_${Util.guid()}`
     this.geojson = {
       type: 'Feature',
       properties: Object.assign({}, properties),
@@ -21,9 +21,53 @@ export default class Rectangle extends BaseShape {
 
     if (imgcoordinates && imgcoordinates.length) {
       this.geojson.geometry.imgcoordinates = imgcoordinates
-      let nodes = this.img2canvasxy(imgcoordinates, this.getImg2canvasRatio())
+      let nodes = Util.img2canvasxy(imgcoordinates, this.getImg2canvasRatio())
       this.geojson.geometry.coordinates = [nodes[0]]
       this.generateCoordinates(nodes[0], nodes[1])
+    }
+  }
+
+  /**
+  * draw out line
+  */
+  drawOutline (showLabel) {
+    let coordinate = this.geojson.geometry.coordinates || []
+    let imgcoordinate = this.geojson.geometry.imgcoordinates || []
+    let center = [0, 0]
+    if (coordinate && coordinate.length) {
+      let point0 = coordinate[0]
+      center[0] += point0[0]
+      center[1] += point0[1]
+
+      this.ctx.beginPath()
+      this.ctx.moveTo(
+        point0[0],
+        point0[1]
+      )
+
+      if (this.props.showPointLabel && showLabel) {
+        this.drawText(this.fontStyle, `{x: ${imgcoordinate[0][0]}, y: ${imgcoordinate[0][1]}}`, [point0[0], point0[1]])
+      }
+
+      for (var i = 1, len = coordinate.length; i < len; i++) {
+        try {
+          let point = coordinate[i]
+          center[0] += point[0]
+          center[1] += point[1]
+
+          if (this.props.showPointLabel && showLabel && i === 4) {
+            this.drawText(this.fontStyle, `{x: ${imgcoordinate[i][0]}, y: ${imgcoordinate[i][1]}}`, [point[0], point[1]])
+          }
+
+          this.ctx.lineTo(point[0], point[1])
+        } catch (e) {
+          console.log(e)
+        }
+      }
+
+      if (this.props.showLabel && this.props.label && showLabel) {
+        this.drawText(this.fontStyle, this.props.label, [center[0] / coordinate.length, center[1] / coordinate.length])
+      }
     }
   }
 
@@ -147,7 +191,7 @@ export default class Rectangle extends BaseShape {
 
       this.geojson.geometry.coordinates = nodes
       let transNodes = Util.canvas2imgxy(nodes, this.getImg2canvasRatio())
-      this.geojson.geometry.imgcoordinates = [transNodes[0], transNodes[4]]
+      this.geojson.geometry.imgcoordinates = transNodes
     }
   }
 
@@ -169,6 +213,7 @@ export default class Rectangle extends BaseShape {
   * @param {Array} point [x, y]
   */
   addPoint (point) {
+    this.state = 'selected'
     let transformPoint = Util.screen2canvasxy(point, this.ctx.canvas)
     // if the point is not equal the last point, then add it
     if (this.geojson.geometry.coordinates.length > 0) {

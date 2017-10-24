@@ -3,14 +3,13 @@
  * @author: wangshiying@126.com
  */
 import Util from '../util/util'
-const ration = (typeof window !== 'undefined' && window.devicePixelRatio) || 1
 
 export default class BaseShape {
   constructor (ctx, properties, imgcoordinates) {
     this.ctx = ctx.ctx
     this.img = ctx.img
 
-    this.state = 'selected' // [show, selected, hover]
+    this.state = 'show' // 'selected' // [show, selected, hover]
     this.tempPoint = null // for mouse move
     this.movePoint = null
     this.drapPoint = null
@@ -147,6 +146,7 @@ export default class BaseShape {
   * @param {Array} point [x, y]
   */
   addPoint (point) {
+    this.state = 'selected'
     let transformPoint = Util.screen2canvasxy(point, this.ctx.canvas)
     let lastPoint = this.geojson.geometry.coordinates[this.geojson.geometry.coordinates.length - 1]
     // if the point is not equal the last point, then add it
