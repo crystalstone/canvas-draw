@@ -14,13 +14,20 @@ npm i // install the Dependency
 
 http://localhost:3000/ 可以看例子
 
-选择某种shape，在canvas就可以进行绘制，双击，结束绘制，可以编辑绘制的图形，按esc键，可以结束当前这个图片的绘制和编辑。如果，你正在画一个图形，你不想画它了，可以按c，取消当前的绘制。
+(2) 一些快捷键
 
-鼠标点击canvas，进行下一个图片的绘制；
+c：添加shape时，在没有双击前，按c取消当前添加
+双击：添加shape时，单击添加点，双击，这个shape绘制完成，当前shape进入编辑状态，可以进行调整大小等
+esc：当前的shape退出编辑状态
 
-如果，想选中之前绘制的图形，要将shape设置为‘请选择’，这样组件会设置为prepareing状态，单击一个图形，可以选中，进行编辑和拖拽。
+（3）例子的使用
 
-选中一个图形，点击删除，删除这个图形
+选择某种shape，
+选中某种label
+在canvas就可以进行绘制
+
+如果，想选中之前绘制的图形，要将shape设置为‘请选择’，这样组件会设置为prepareing状态
+单击一个图形，可以选中，进行编辑、拖拽、删除
 
 3. API
 (1) 初始化
@@ -121,3 +128,7 @@ hope.deleteFeature(hopeInstance)
 
 eg:
 hope.deleteFeature(hope.currentFeature)
+
+4. 如何build（发布新的lib的版本、打成一个lib包供）
+
+// todo
