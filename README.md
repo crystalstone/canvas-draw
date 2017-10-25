@@ -91,7 +91,7 @@ eg：
 hope.changeModel()
 
 
-(3) 筛选
+(4) 筛选
 hope.setFilter(key, opt, value)
 
 key：必须是properties中的某个key
@@ -102,8 +102,7 @@ eg：
 hope.setFilter('label', 'equal', v)
 hope.setFilter('label', 'in', ['Person', 'Police'])
 
-
-(4) 改变某些shape的属性
+(5) 改变某些shape的属性
 hope.changePorprities(filter, key, value)
 filter：定义同3
 key：要改变的properties中的哪个key
@@ -116,7 +115,7 @@ hope.changePorprities({
   value: [true, false]
 }, 'showLabel', true)
 
-(5) 删除一个feature
+(6) 删除一个feature
 
 hope.deleteFeature(hopeInstance)
 
