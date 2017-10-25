@@ -22,4 +22,103 @@ http://localhost:3000/ 可以看例子
 
 选中一个图形，点击删除，删除这个图形
 
-（2）
+3. API
+(1) 初始化
+
+let hope = window.hope = new Hope(
+  'root', // container id（比如一个div的id）
+  {
+    // width: 800, 设置画布大小 如果不设置，则为 container的 宽高
+    // height: 500
+  }
+)
+
+(2) 添加已有的shape
+
+添加一个：
+hope.addFeature({
+  type: 'Polygon', // 只可以是 Polygon、Rectangle中的一个 !!!!
+  properties: { // 如果，你不设置fontStyle等样式，则安装默认显示
+    label: 'Person', // 标签显示什么
+    showLabel: true, // 标签是否显示
+    showPointLabel: true, // 坐标点标签是否显示
+    fontStyle: { // 指定标签的颜色
+      fillColor: '#fff'
+    },
+    baseStyle: { // 指定中普通状态下，shape的样式
+      strokeColor: 'rgba(255, 255, 255, 0.8)', // 边框颜色
+      fillColor: 'rgba(255, 255, 255, 0.8)', // 填充颜色
+      lineWidth: 1, // 边框线的宽度
+      lineCap: 'round', // 可以忽略
+      lineJoin: 'round' // 可以忽略
+    },
+    hoverStyle: { // 指定鼠标经过shape状态下，shape的样式, 在baseStyle基础上，进行部分项目的更新，
+      fillColor: null, // 如果你在baseStyle中设置了fillcolor，中hover状态下，不想显示背景色，则需要这里制空
+      strokeColor: 'rgba(255, 255, 255, 1)',
+      lineWidth: 2
+    },
+    selectedStyle: {// 指定鼠标选中、或者添加shape状态下，shape的样式, 在baseStyle基础上，进行部分项目的更新，
+      fillColor: null,
+      strokeColor: '#fff',
+      lineDashOffset: 0,
+      lineDash: [10, 4]
+    }
+  }, // 指定绘制成什么样子的
+  coordinate: coordinate // 在图片中的真实坐标, 格式为：[[3，10], [20，4]...]
+})
+
+添加多个：
+hope.addFeature([
+    {
+      type: type,
+      properties: properties,
+      coordinate: coordinate
+    },
+    {
+      ......
+    }
+])
+
+(3) 改变绘制模型
+
+hope.changeModel(
+  type, // 只可以是 Polygon、Rectangle中的一个!!!!!!
+  properties // 同2 介绍的
+)
+表面，当前，一旦出现点击画布这种事件，绘制的就是type，并且绘制的样式是按照properties来进行的
+当什么参数都不传的时候，则表明，停止绘制了
+eg：
+hope.changeModel()
+
+
+(3) 筛选
+hope.setFilter(key, opt, value)
+
+key：必须是properties中的某个key
+opt：[in、not-in、equal、not-equal]中的一个
+value：值
+
+eg：
+hope.setFilter('label', 'equal', v)
+hope.setFilter('label', 'in', ['Person', 'Police'])
+
+
+(4) 改变某些shape的属性
+hope.changePorprities(filter, key, value)
+filter：定义同3
+key：要改变的properties中的哪个key
+value：改成什么值
+
+eg：改变 showLabel 的值为true || false的所有shape，将showLabel 设为 true
+hope.changePorprities({
+  key: 'showLabel',
+  opt: 'in',
+  value: [true, false]
+}, 'showLabel', true)
+
+(5) 删除一个feature
+
+hope.deleteFeature(hopeInstance)
+
+eg:
+hope.deleteFeature(hope.currentFeature)
