@@ -195,6 +195,7 @@ export default class Hope {
     this.container.addEventListener('click', (e) => { this.clickHandler(e) })
     this.container.addEventListener('dblclick', (e) => { this.dblclickHandler(e) })
     this.container.addEventListener('mousemove', (e) => { this.mouseMoveHandler(e) })
+    this.container.addEventListener('mousedown', (e) => { this.mouseDownHandler(e) })
     document.addEventListener('keydown', (e) => { this.onkeydownHandler(e) })
   }
 
@@ -233,6 +234,9 @@ export default class Hope {
   * @param {Object} e event
   */
   clickHandler (e) {
+    e.preventDefault()
+  　e.stopPropagation()
+
     switch (this.optState) {
       case 'prepareing': // selected a feature
         for (let key in this.featureList) {
@@ -272,6 +276,7 @@ export default class Hope {
       default:
         break
     }
+    return false
   }
 
   /**
@@ -279,6 +284,8 @@ export default class Hope {
   * @param {Object} e event
   */
   dblclickHandler (e) {
+    e.preventDefault()
+  　e.stopPropagation()
     switch (this.optState) {
       case 'prepareing': // selected a feature
         break
@@ -292,6 +299,15 @@ export default class Hope {
       default:
         break
     }
+    return false
+  }
+
+  mouseDownHandler (e) {
+    e.preventDefault()
+  　e.stopPropagation()
+    e.cancelBubble = true
+    e.returnValue = false
+    return false
   }
 
   /**
@@ -299,56 +315,62 @@ export default class Hope {
   * @param {Object} e event
   */
   mouseMoveHandler (e) {
-    setTimeout(() => {
-      switch (this.optState) {
-        case 'prepareing':
-        case 'prepared':
-          this.hoverRender(e)
-          break
-        case 'drawing': // drawing feature
-          if (this.currentFeature) {
-            this.currentFeature.setTempPoint([
-                e.pageX,
-                e.pageY
-            ])
-            this.reRender()
-          }
-          break
-        case 'editing': // editing feature
-          if (this.currentFeature) {
-            if (this.currentFeature.drapPoint || this.currentFeature.checkPointOnNode([e.pageX, e.pageY])) {
-              this.container.style.cursor = 'crosshair'
-              if (e.buttons === 1) {
-                this.currentFeature.drag([e.pageX, e.pageY])
-                this.reRender()
-              } else {
-                this.currentFeature.stopDrag()
-              }
-              return
-            }
+    e.preventDefault()
+  　e.stopPropagation()
+    e.cancelBubble = true
+    e.returnValue = false
 
-            let isInside = this.currentFeature.checkPointInside([e.pageX, e.pageY])
-            if (isInside) {
-              this.container.style.cursor = 'move'
-              if (e.buttons === 1) {
-                this.currentFeature.move([e.pageX, e.pageY])
-                this.reRender()
-              } else {
-                this.currentFeature.stopMove()
-              }
-              return
-            }
-
-            if (this.model) {
-              this.container.style.cursor = 'auto'
+    switch (this.optState) {
+      case 'prepareing':
+      case 'prepared':
+        this.hoverRender(e)
+        break
+      case 'drawing': // drawing feature
+        if (this.currentFeature) {
+          this.currentFeature.setTempPoint([
+              e.pageX,
+              e.pageY
+          ])
+          this.reRender()
+        }
+        break
+      case 'editing': // editing feature
+        if (this.currentFeature) {
+          if (this.currentFeature.drapPoint || this.currentFeature.checkPointOnNode([e.pageX, e.pageY])) {
+            this.container.style.cursor = 'crosshair'
+            if (e.buttons === 1) {
+              this.currentFeature.drag([e.pageX, e.pageY])
+              this.reRender()
             } else {
-              this.container.style.cursor = 'pointer'
+              this.currentFeature.stopDrag()
             }
+
+            return false
+
+          } else if (this.currentFeature.checkPointInside([e.pageX, e.pageY])) {
+            this.container.style.cursor = 'move'
+            if (e.buttons === 1) {
+              this.currentFeature.move([e.pageX, e.pageY])
+              this.reRender()
+            } else {
+              this.currentFeature.stopMove()
+            }
+
+            return false
           }
-          break
-        default:
-      }
-    }, 0)
+        }
+
+        if (this.model) {
+          this.container.style.cursor = 'auto'
+        } else {
+          this.container.style.cursor = 'pointer'
+        }
+
+        break
+      default:
+        break
+    }
+    return false
   }
 
   /**
@@ -394,12 +416,14 @@ export default class Hope {
   * render again
   */
   reRender () {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
-    for (let key in this.featureList) {
-      if (this.featureList.hasOwnProperty(key) && this.matchFilter(this.featureList[key], this.filter)) {
-        this.featureList[key].draw()
+    setTimeout(() => {
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+      for (let key in this.featureList) {
+        if (this.featureList.hasOwnProperty(key) && this.matchFilter(this.featureList[key], this.filter)) {
+          this.featureList[key].draw()
+        }
       }
-    }
+    }, 0)
   }
 
   /**

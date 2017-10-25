@@ -20,7 +20,6 @@ export default class App extends Component {
       filter: '-1',
       labelType: 'Person'
     }
-
   }
 
   componentWillReceiveProps (nextProps) {}

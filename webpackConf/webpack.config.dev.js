@@ -15,6 +15,7 @@ module.exports = {
     'index': [
       'webpack-dev-server/client?http://localhost:3000',
       'webpack/hot/only-dev-server',
+      'babel-polyfill',
       path.join(__dirname, '../example/index.js')
     ]
   },
@@ -59,7 +60,7 @@ module.exports = {
       },
       {
         test: /\.js[x]?$/,
-        exclude: /node_modules/,
+        // exclude: /node_modules/,
         loader: 'babel-loader'
       },
       {

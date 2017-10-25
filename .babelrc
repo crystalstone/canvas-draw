@@ -21,6 +21,7 @@
     "transform-es2015-block-scoping",
     "transform-es2015-typeof-symbol",
     "transform-class-properties",
+    "transform-object-assign",
     ["transform-regenerator", { "async": false, "asyncGenerators": false }],
   ],
   "presets": ["es2015", "stage-0", "stage-1", "stage-2", "react"]

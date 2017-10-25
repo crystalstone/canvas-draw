@@ -137,8 +137,6 @@ export default {
   },
 
   windingLine: function (x0, y0, x1, y1, x, y) {
-    // x = x * DEFAULT_PIXEL_RATIO
-    // y = y * DEFAULT_PIXEL_RATIO
     if ((y > y0 && y > y1) || (y < y0 && y < y1)) {
       return 0
     }

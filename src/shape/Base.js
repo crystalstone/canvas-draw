@@ -244,7 +244,7 @@ export default class BaseShape {
       this.ctx.lineWidth = style.lineWidth
     }
 
-    this.ctx.setLineDash(style.lineDash || [0, 0])
+    this.ctx.setLineDash(style.lineDash || [10, 0])
     this.ctx.lineDashOffset = style.lineDashOffset || 0
 
     if (style.fillColor) {
