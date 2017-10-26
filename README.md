@@ -1,6 +1,6 @@
 a library for canvas to draw basic shape, such as, polygon...
 
-1. prepare environment to run the example
+## 1. prepare environment to run the example
 
 install node and npm
 
@@ -8,13 +8,13 @@ cd canvas-draw // come into the base dir
 
 npm i // install the Dependency
 
-2. how to use
+## 2. how to use
 
-(1) 基本环境安装好后，在根目录，npm start，可启动example
+### (1) 基本环境安装好后，在根目录，npm start，可启动example
 
 http://localhost:3000/ 可以看例子
 
-(2) 一些快捷键
+### (2) 一些快捷键
 
 c：添加shape时，在没有双击前，按c取消当前添加
 
@@ -22,7 +22,7 @@ c：添加shape时，在没有双击前，按c取消当前添加
 
 esc：当前的shape退出编辑状态
 
-(3）例子的使用
+### (3）例子的使用
 
 选择某种shape，
 
@@ -34,9 +34,9 @@ esc：当前的shape退出编辑状态
 
 单击一个图形，可以选中，进行编辑、拖拽、删除
 
-3. API
+## 3. API
 
-(1) 初始化
+### (1) 初始化
 
 ```
 let hope = window.hope = new Hope(
@@ -48,7 +48,7 @@ let hope = window.hope = new Hope(
 )
 
 ```
-(2) 添加已有的shape
+### (2) 添加已有的shape
 
 注意：type 只能是Polygon、Rectangle中的一个！！！！
 
@@ -100,7 +100,7 @@ hope.addFeature([
 ])
 
 ```
-(3) 改变绘制模型
+### (3) 改变绘制模型
 ```
 hope.changeModel(
   type, // 只可以是 Polygon、Rectangle中的一个!!!!!!
@@ -118,7 +118,7 @@ hope.changeModel()
 
 ```
 
-(4) 筛选
+### (4) 筛选
 ```
 hope.setFilter(key, opt, value)
 
@@ -135,7 +135,7 @@ hope.setFilter('label', 'equal', v)
 hope.setFilter('label', 'in', ['Person', 'Police'])
 
 ```
-(5) 改变某些shape的属性
+### (5) 改变某些shape的属性
 
 ```
 hope.changePorprities(filter, key, value)
@@ -157,7 +157,7 @@ hope.changePorprities({
 }, 'showLabel', true)
 
 ```
-(6) 删除一个feature
+### (6) 删除一个feature
 ```
 hope.deleteFeature(hopeInstance)
 
@@ -170,7 +170,7 @@ hope.deleteFeature(hope.currentFeature)
 
 ```
 
-（7）结束当前shape的添加 或者编辑
+###（7）结束当前shape的添加 或者编辑
 
 ```
 hope.finish()
@@ -178,7 +178,7 @@ hope.finish()
 ```
 例如，你编辑完一个shape后，保存，调用hope.finish()，就可以添加或编辑下一个shape了，否则不可进行下一个的添加编辑
 
-（8）抛出来事件
+###（8）抛出来事件
 
 a. select: 选中某个shape后，会抛出这个事件
 
@@ -189,6 +189,6 @@ hope.on('select', (featureUuid) => {
 ```
 a. finish: 按esc、或者调用 hope.finish 后触发
 
-4. 如何build（发布新的lib的版本、打成一个lib包供）
+## 4. 如何build（发布新的lib的版本、打成一个lib包供）
 
 // todo
