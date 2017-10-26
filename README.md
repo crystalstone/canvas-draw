@@ -17,16 +17,21 @@ http://localhost:3000/ 可以看例子
 (2) 一些快捷键
 
 c：添加shape时，在没有双击前，按c取消当前添加
+
 双击：添加shape时，单击添加点，双击，这个shape绘制完成，当前shape进入编辑状态，可以进行调整大小等
+
 esc：当前的shape退出编辑状态
 
 (3）例子的使用
 
-选择某种shape，  
+选择某种shape，
+
 选中某种label  
+
 在canvas就可以进行绘制  
 
 如果，想选中之前绘制的图形，要将shape设置为‘请选择’，这样组件会设置为prepareing状态
+
 单击一个图形，可以选中，进行编辑、拖拽、删除
 
 3. API
@@ -100,8 +105,9 @@ hope.changeModel(
 
 ```
 
-表面，当前，一旦出现点击画布这种事件，绘制的就是type，并且绘制的样式是按照properties来进行的
+表明，当前，一旦出现点击画布这种事件，绘制的就是type，并且绘制的样式是按照properties来进行的
 当什么参数都不传的时候，则表明，停止绘制了
+
 eg：
 ```
 hope.changeModel()
@@ -114,7 +120,9 @@ hope.setFilter(key, opt, value)
 
 ```
 key：必须是properties中的某个key
+
 opt：[in、not-in、equal、not-equal]中的一个
+
 value：值
 
 eg：
@@ -124,9 +132,15 @@ hope.setFilter('label', 'in', ['Person', 'Police'])
 
 ```
 (5) 改变某些shape的属性
+
+```
 hope.changePorprities(filter, key, value)
+
+```
 filter：定义同3
+
 key：要改变的properties中的哪个key
+
 value：改成什么值
 
 eg：改变 showLabel 的值为true || false的所有shape，将showLabel 设为 true
