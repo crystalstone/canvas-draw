@@ -48,6 +48,8 @@ let hope = window.hope = new Hope(
 ```
 (2) 添加已有的shape
 
+注意：type 只能是Polygon、Rectangle中的一个！！！！
+
 添加一个：
 ```
 hope.addFeature({
@@ -166,6 +168,24 @@ hope.deleteFeature(hope.currentFeature)
 
 ```
 
+（7）结束当前shape的添加 或者编辑
+
+```
+hope.finish()
+
+```
+例如，你编辑完一个shape后，保存，调用hope.finish()，就可以添加或编辑下一个shape了，否则不可进行下一个的添加编辑
+
+（8）抛出来事件
+
+a. select: 选中某个shape后，会抛出这个事件
+
+```
+hope.on('select', (featureUuid) => {
+  // do someing
+})
+```
+a. finish: 按esc、或者调用 hope.finish 后触发
 
 4. 如何build（发布新的lib的版本、打成一个lib包供）
 

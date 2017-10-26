@@ -205,16 +205,7 @@ export default class Hope {
   */
   onkeydownHandler (e) {
     if (e && e.keyCode === 27 && this.optState === 'editing') { // exit drawing or editing
-      this.currentFeature && this.currentFeature.changeState('show')
-      this.reRender()
-      this.emit('finish', this.currentFeature.uuid)
-
-      if (this.model) {
-        this.changeOptState('prepared')
-      } else {
-        this.changeOptState('prepareing')
-      }
-      this.currentFeature = null
+      this.finish()
     }
 
     if (e && e.keyCode === 67 && this.optState === 'drawing') { // c 67 cancel
@@ -245,6 +236,8 @@ export default class Hope {
             this.currentFeature = this.featureList[key]
             this.featureList[key].changeState('selected')
             this.optState = 'editing'
+
+            this.emit('select', this.currentFeature.uuid)
             break
           }
         }
@@ -499,6 +492,24 @@ export default class Hope {
     }
 
     this.reRender()
+  }
+
+  /**
+  * finish current draw|edit
+  */
+  finish () {
+    if (this.currentFeature) {
+      this.currentFeature.changeState('show')
+      this.reRender()
+    }
+
+    this.emit('finish', this.currentFeature.uuid)
+    if (this.model) {
+      this.changeOptState('prepared')
+    } else {
+      this.changeOptState('prepareing')
+    }
+    this.currentFeature = null
   }
 
 }
