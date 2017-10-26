@@ -169,13 +169,16 @@ eg:
 hope.deleteFeature(hope.currentFeature)
 
 ```
-###（7）结束当前shape的添加 或者编辑
+
+### (7) 结束当前shape的添加 或者编辑
+
 ```
 hope.finish()
 
 ```
 例如，你编辑完一个shape后，保存，调用hope.finish()，就可以添加或编辑下一个shape了，否则不可进行下一个的添加编辑
-###（8）抛出来事件
+
+### (8) 抛出来事件
 
 a. select: 选中某个shape后，会抛出这个事件
 
