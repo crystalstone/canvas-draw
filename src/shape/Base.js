@@ -13,7 +13,7 @@ export default class BaseShape {
     this.tempPoint = null // for mouse move
     this.movePoint = null
     this.drapPoint = null
-    this.props = properties || {}
+    this.props = JSON.parse(JSON.stringify(properties || {}))
 
     this.changePorprities()
   }
