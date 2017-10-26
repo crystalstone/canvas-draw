@@ -10,7 +10,7 @@ npm i // install the Dependency
 
 2. how to use
 
-(1) 基本环境安装好后，在跟目录，npm start，可启动example
+(1) 基本环境安装好后，在根目录，npm start，可启动example
 
 http://localhost:3000/ 可以看例子
 
@@ -35,7 +35,9 @@ esc：当前的shape退出编辑状态
 单击一个图形，可以选中，进行编辑、拖拽、删除
 
 3. API
+
 (1) 初始化
+
 ```
 let hope = window.hope = new Hope(
   'root', // container id（比如一个div的id）
