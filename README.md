@@ -43,6 +43,7 @@ esc：当前的shape退出编辑状态
 (2) 添加已有的shape
 
 添加一个：
+```
     hope.addFeature({
       type: 'Polygon', // 只可以是 Polygon、Rectangle中的一个 !!!!
       properties: { // 如果，你不设置fontStyle等样式，则安装默认显示
@@ -73,8 +74,9 @@ esc：当前的shape退出编辑状态
       }, // 指定绘制成什么样子的
       coordinate: coordinate // 在图片中的真实坐标, 格式为：[[3，10], [20，4]...]
     })
-
+```
 添加多个：
+```
     hope.addFeature([
         {
           type: type,
@@ -85,7 +87,7 @@ esc：当前的shape退出编辑状态
           ......
         }
     ])
-
+```
 (3) 改变绘制模型
 
     hope.changeModel(
