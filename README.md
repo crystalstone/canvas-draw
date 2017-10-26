@@ -141,7 +141,7 @@ hope.setFilter('label', 'in', ['Person', 'Police'])
 hope.changePorprities(filter, key, value)
 
 ```
-filter：定义同3
+filter：定义同4
 
 key：要改变的properties中的哪个key
 
