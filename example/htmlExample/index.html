@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="renderer" content="webkit">
+  <title>CANVAS-DRAW</title>
+</head>
+<link href="./style.css" rel="stylesheet">
+<script src="https://cdn.bootcss.com/jquery/3.0.0/jquery.min.js"></script>
+
+<body>
+  <div class="main-page">
+    <div id="root"></div>
+    <div id='editor'>
+      <div>
+        如果你要选中一个已经绘制调shape，必须把 shape这个选项，改成请选择。
+        对应代码，必须 hope.changeModel(), 原理是，hope内部，model必须是null
+      </div>
+      <div>
+        shape:
+        <select id='shape'>
+          <option value ="-1">请选择</option>
+          <option value ="Polygon">Polygon</option>
+          <option value="Rectangle">Rectangle</option>
+        </select>
+      </div>
+
+      <div>
+        label-type:
+        <select id='label-type'>
+          <option value ="Person">Person</option>
+          <option value="Police">Police</option>
+        </select>
+      </div>
+
+      <div>
+        filter:
+        <select id='filter'>
+          <option value ="-1">请选择</option>
+          <option value ="Person">Person</option>
+          <option value="Police">Police</option>
+        </select>
+      </div>
+
+      <div>
+        label:
+        <select id='label'>
+          <option value ="show">show</option>
+          <option value="hide">hide</option>
+        </select>
+      </div>
+
+      <div>
+        point-label:
+        <select id='point-label'>
+          <option value ="show">show</option>
+          <option value="hide">hide</option>
+        </select>
+      </div>
+
+
+      <div>
+        <button id='save-btn'>保存绘制元素</button>
+        <button id='delete-btn'>删除选中元素</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="../../asset/hope.0.1.js"></script>
+  <script src="./main.js"></script>
+
+</body>
+</html>

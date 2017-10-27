@@ -515,3 +515,6 @@ export default class Hope {
 }
 
 EventEmit(Hope.prototype)
+
+
+window.Hope = Hope

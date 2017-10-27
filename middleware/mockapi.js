@@ -11,7 +11,7 @@ module.exports = function (req, res, next) {
     console.log(req.originalUrl)
     console.log(req.body)
     console.log(req.query)
-    var data = require(path.join(__dirname, '../example/mock') + req.path + '.js')(req, res)
+    var data = require(path.join(__dirname, '../example/reactExample/mock') + req.path + '.js')(req, res)
     res.send(data)
 
   } else {

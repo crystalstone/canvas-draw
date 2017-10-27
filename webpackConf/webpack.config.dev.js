@@ -16,7 +16,7 @@ module.exports = {
       'webpack-dev-server/client?http://localhost:3000',
       'webpack/hot/only-dev-server',
       'babel-polyfill',
-      path.join(__dirname, '../example/index.js')
+      path.join(__dirname, '../example/reactExample/index.js')
     ]
   },
   output: {
@@ -35,13 +35,13 @@ module.exports = {
       inject: false,
       appMountId: 'map',
       filename: 'index.html',
-      template: path.join(__dirname, '../example/index.ejs')
+      template: path.join(__dirname, '../example/reactExample/index.ejs')
     }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
     new CopyWebpackPlugin([
       {
-        from: path.join(__dirname, '../example/mock/img/'),
+        from: path.join(__dirname, '../example/reactExample/mock/img/'),
         to: 'img/'
       }
     ])
@@ -56,7 +56,7 @@ module.exports = {
       {
         test: /\.rt$/,
         loader: ['babel-loader', 'react-templates-loader?modules=amd'],
-        include: path.join(__dirname, '../example/')
+        include: path.join(__dirname, '../example/reactExample/')
       },
       {
         test: /\.js[x]?$/,

@@ -191,4 +191,9 @@ a. finish: 按esc、或者调用 hope.finish 后触发
 
 ## 4. 如何build（发布新的lib的版本、打成一个lib包供）
 
-// todo
+1. 在webpackConf目录，webpack.config.prod.js 文件中，更改18行：“ filename: 'hope.0.1.js' ”，
+比如，改成“ filename: 'hope.0.2.js' ”。表面，这次构建出来的文件的版本号是0.2
+
+2. 在项目根目录，运行 npm run build
+
+3. 在asset目录中，找到构建完成的文件，在其他项目中可以引用
