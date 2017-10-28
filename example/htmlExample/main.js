@@ -1,4 +1,3 @@
-
 var hope = new Hope(
   'root', // canvas container id
   {
@@ -123,14 +122,15 @@ var Theme = {
 var shapes = []
 for (var i = 0, len = testData[0].label.length; i < len; i++) {
   var item = testData[0].label[i]
-  let type = item.position.length === 2 ? 'Rectangle' : 'Polygon'
-  let label = item.name
-  let theme = JSON.parse(JSON.stringify(Theme[type][label] || {baseStyle: {}})) // 为了防止传入引用
+  var type = item.position.length === 2 ? 'Rectangle' : 'Polygon'
+  var label = item.name
+  var theme = JSON.parse(JSON.stringify(Theme[type][label] || {baseStyle: {}})) // 为了防止传入引用
   theme.baseStyle.strokeColor = item.color
-  let coordinate = []
-  item.position.forEach(item => {
-    coordinate.push([item.x, item.y])
-  })
+  var coordinate = []
+
+  for (var j = 0; j < item.position.length; j++) {
+    coordinate.push([item.position[j].x, item.position[j].y])
+  }
 
   shapes.push({ // 必须说明，添加shape的类型、属性、坐标，属性的各种配置，请看theme
     type: type,
@@ -200,6 +200,6 @@ $('#save-btn').on('click', function (e) {
   hope.finish()
 })
 
-$('#delete-btn').on('change', function (e) {
+$('#delete-btn').on('click', function (e) {
   hope && hope.deleteFeature(hope.currentFeature)
 })
