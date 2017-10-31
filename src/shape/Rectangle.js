@@ -9,6 +9,7 @@ export default class Rectangle extends BaseShape {
   constructor (ctx, properties, imgcoordinates) {
     super(ctx, properties, imgcoordinates)
     this.uuid = `Rectangle_${Util.guid()}`
+    this.type = 'Rectangle'
     this.geojson = {
       type: 'Feature',
       properties: Object.assign({}, properties),
@@ -24,6 +25,9 @@ export default class Rectangle extends BaseShape {
       let nodes = Util.img2canvasxy(imgcoordinates, this.getImg2canvasRatio())
       this.geojson.geometry.coordinates = [nodes[0]]
       this.generateCoordinates(nodes[0], nodes[1])
+      // 防止计算引起的误差
+      this.geojson.geometry.imgcoordinates[0] = imgcoordinates[0]
+      this.geojson.geometry.imgcoordinates[4] = imgcoordinates[1]
     }
   }
 

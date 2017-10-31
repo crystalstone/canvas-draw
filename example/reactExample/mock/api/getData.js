@@ -6,8 +6,9 @@ module.exports = function (req, res) {
         imgUrl: '/img/002.jpg',
         label: [
           {
-            position: [{x: 5, y: 5}, {x: 30, y: 30}],
-            name: 'Police',
+            // 590 392
+            position: [{x: 406, y: 323}, {x: 305, y: 376}],
+            name: 'Person',
             color: 'blue'
           },
           {

@@ -123,7 +123,13 @@ export default class App extends Component {
    * delete
    */
   delete () {
-    hope.deleteFeature(hope.currentFeature)
+    hope && hope.deleteFeature(hope.currentFeature)
+  }
+
+  getall () {
+    let data = hope.getAllData()
+
+    console.log(data)
   }
 
   save () {

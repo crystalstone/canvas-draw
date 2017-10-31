@@ -60,6 +60,33 @@ export default class Hope {
   }
 
   /**
+  * get all data
+  */
+  getAllData () {
+    let data = []
+    for (let key in this.featureList) {
+      let item = this.featureList[key]
+      let position = []
+      if (item.type == 'Rectangle' && item.geojson.geometry.imgcoordinates.length) {
+        position = [
+          item.geojson.geometry.imgcoordinates[0],
+          item.geojson.geometry.imgcoordinates[4]
+        ]
+      } else {
+        position = item.geojson.geometry.imgcoordinates
+      }
+      data.push(
+        {
+          position: position,
+          name: item.geojson.properties.label || '',
+          color: item.baseStyle.strokeColor || ''
+        }
+      )
+    }
+    return data
+  }
+
+  /**
   * append a canvas ele to container
   */
   initContext () {
@@ -145,6 +172,7 @@ export default class Hope {
   deleteFeature (feature) {
     if (feature && feature.uuid) {
       delete this.featureList[feature.uuid]
+      this.optState = 'prepareing'
       this.reRender()
     }
   }

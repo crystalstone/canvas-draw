@@ -10,6 +10,7 @@ export default class Polygon extends BaseShape {
     super(ctx, properties, imgcoordinates)
 
     this.uuid = `Polygon_${Util.guid()}`
+    this.type = 'Polygon'
     this.geojson = {
       type: 'Feature',
       properties: Object.assign({}, properties),

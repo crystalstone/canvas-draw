@@ -111,4 +111,9 @@
         <Button type="primary" onClick={this.delete.bind(this)}>删除选中元素</Button>
       </Col>
     </Row>
+    <Row>
+      <Col span={24}>
+        <Button type="primary" onClick={this.getall.bind(this)}>获取全部数据</Button>
+      </Col>
+    </Row>
 </div>

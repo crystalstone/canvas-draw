@@ -203,3 +203,9 @@ $('#save-btn').on('click', function (e) {
 $('#delete-btn').on('click', function (e) {
   hope && hope.deleteFeature(hope.currentFeature)
 })
+
+
+$('#getall-btn').on('click', function (e) {
+  var data = hope.getAllData();
+  console.log(data);
+})
