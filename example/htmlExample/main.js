@@ -1,8 +1,8 @@
 var hope = new Hope(
   'root', // canvas container id
   {
-    // width: 800, 设置画布大小
-    // height: 500
+    width: 800, // 设置画布大小
+    height: 500
   }
 )
 
@@ -29,6 +29,21 @@ var testData = [
       {
         position: [{x: 105, y: 105}, {x: 155, y: 155}],
         name: 'Person',
+        color: 'yellow'
+      }
+    ]
+  },
+  {
+    imgUrl: './timg.jpeg',
+    label: [
+      {
+        position: [{x: 55, y: 35}, {x: 160, y: 50}],
+        name: 'Person',
+        color: 'red'
+      },
+      {
+        position: [{x: 135, y: 85}, {x: 200, y: 30}, {x: 145, y: 65}, {x: 100, y: 100}],
+        name: 'Police',
         color: 'yellow'
       }
     ]
@@ -208,4 +223,31 @@ $('#delete-btn').on('click', function (e) {
 $('#getall-btn').on('click', function (e) {
   var data = hope.getAllData();
   console.log(data);
+})
+
+$('#next-btn').on('click', function () {
+  var shapes = []
+  for (var i = 0, len = testData[1].label.length; i < len; i++) {
+    var item = testData[0].label[i]
+    var type = item.position.length === 2 ? 'Rectangle' : 'Polygon'
+    var label = item.name
+    var theme = JSON.parse(JSON.stringify(Theme[type][label] || {baseStyle: {}})) // 为了防止传入引用
+    theme.baseStyle.strokeColor = item.color
+    var coordinate = []
+
+    for (var j = 0; j < item.position.length; j++) {
+      coordinate.push([item.position[j].x, item.position[j].y])
+    }
+
+    shapes.push({ // 必须说明，添加shape的类型、属性、坐标，属性的各种配置，请看theme
+      type: type,
+      properties: theme,
+      coordinate: coordinate
+    })
+  }
+
+  hope.loadImg(testData[1].imgUrl, function () { // 加载一张图片
+    // 将shape 进行绘制
+    hope.addFeature(shapes)
+  })
 })

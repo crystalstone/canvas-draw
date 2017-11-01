@@ -116,4 +116,9 @@
         <Button type="primary" onClick={this.getall.bind(this)}>获取全部数据</Button>
       </Col>
     </Row>
+    <Row>
+      <Col span={24}>
+        <Button type="primary" onClick={this.next.bind(this)}>下一个</Button>
+      </Col>
+    </Row>
 </div>

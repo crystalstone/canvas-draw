@@ -13,8 +13,8 @@ window.http = axios.create({
 let hope = window.hope = new Hope(
   'root', // canvas container id
   {
-    // width: 800, 设置画布大小
-    // height: 500
+    width: 800, // 设置画布大小
+    height: 500
   }
 )
 

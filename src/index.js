@@ -50,6 +50,7 @@ export default class Hope {
 
       this.container.style.width = `${this.options.width}px`
       this.container.style.height = `${this.options.height}px`
+      this.container.style.padding = '0px'
 
       this.initContext()
       this.initEvent()
@@ -57,6 +58,21 @@ export default class Hope {
     } else {
       console.error('please confirm the container ID is useful!')
     }
+  }
+
+  clear () {
+    this.featureList = {}
+    this.currentFeature = null
+    this.filter = null
+    this.hoverFeatureUuid = null
+    if (this.model) {
+      this.changeOptState('prepared')
+    } else {
+      this.changeOptState('prepareing')
+    }
+    this.ctx && this.ctx.clearRect && this.ctx.clearRect(
+      0, 0, this.canvas.width, this.canvas.height
+    )
   }
 
   /**
@@ -125,9 +141,10 @@ export default class Hope {
           imgCanvas.id = `${(new Date()).getTime()}_img_canvas`
           this.container && this.container.insertBefore(imgCanvas, this.canvas)
           this.imgCanvas = imgCanvas
-          this.img = img
           this.imgCtx = this.imgCanvas.getContext('2d')
         }
+        this.img = img
+        this.clear()
         this.imgCtx.drawImage(img, 0, 0, this.imgCanvas.width, this.imgCanvas.height)
         cb && cb()
       }

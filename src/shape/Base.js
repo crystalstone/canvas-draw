@@ -297,7 +297,10 @@ export default class BaseShape {
       }
 
       if (this.props.showLabel && this.props.label && showLabel) {
-        this.drawText(this.fontStyle, this.props.label, [center[0] / coordinate.length, center[1] / coordinate.length])
+        this.drawText(this.fontStyle, this.props.label, [
+          center[0] / coordinate.length - this.props.label.length * 3,
+          center[1] / coordinate.length
+        ])
       }
 
     }
