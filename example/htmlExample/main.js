@@ -251,3 +251,12 @@ $('#next-btn').on('click', function () {
     hope.addFeature(shapes)
   })
 })
+
+$('#editable').on('change', function (e) {
+  var v = +e.target.value
+  if (v) {
+    hope.enable()
+  } else {
+    hope.disable()
+  }
+})

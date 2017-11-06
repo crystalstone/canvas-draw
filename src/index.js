@@ -42,6 +42,7 @@ export default class Hope {
       this.currentFeature = null
       this.filter = null
       this.hoverFeatureUuid = null
+      this.enableEdit = true
       // this.options.width = this.options.width * this.options.ration
       // this.options.height = this.options.height * this.options.ration
 
@@ -58,6 +59,29 @@ export default class Hope {
     } else {
       console.error('please confirm the container ID is useful!')
     }
+  }
+
+  enable () {
+    this.enableEdit = true
+  }
+
+  disable () {
+    this.enableEdit = false
+  }
+
+  clear () {
+    this.featureList = {}
+    this.currentFeature = null
+    this.filter = null
+    this.hoverFeatureUuid = null
+    if (this.model) {
+      this.changeOptState('prepared')
+    } else {
+      this.changeOptState('prepareing')
+    }
+    this.ctx && this.ctx.clearRect && this.ctx.clearRect(
+      0, 0, this.canvas.width, this.canvas.height
+    )
   }
 
   clear () {
@@ -273,6 +297,10 @@ export default class Hope {
     e.preventDefault()
   　e.stopPropagation()
 
+    if (!this.enableEdit) {
+      return
+    }
+
     switch (this.optState) {
       case 'prepareing': // selected a feature
         for (let key in this.featureList) {
@@ -324,6 +352,9 @@ export default class Hope {
   dblclickHandler (e) {
     e.preventDefault()
   　e.stopPropagation()
+    if (!this.enableEdit) {
+      return
+    }
     switch (this.optState) {
       case 'prepareing': // selected a feature
         break
