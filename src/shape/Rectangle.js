@@ -8,6 +8,18 @@ import BaseShape from './base'
 export default class Rectangle extends BaseShape {
   constructor (ctx, properties, imgcoordinates) {
     super(ctx, properties, imgcoordinates)
+    
+    this.ctx = ctx.ctx
+    this.img = ctx.img
+
+    this.state = 'show' // 'selected' // [show, selected, hover]
+    this.tempPoint = null // for mouse move
+    this.movePoint = null
+    this.drapPoint = null
+    this.props = JSON.parse(JSON.stringify(properties || {}))
+
+    this.changePorprities()
+
     this.uuid = `Rectangle_${Util.guid()}`
     this.type = 'Rectangle'
     this.geojson = {

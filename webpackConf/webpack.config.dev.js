@@ -44,6 +44,16 @@ module.exports = {
         from: path.join(__dirname, '../example/reactExample/mock/img/'),
         to: 'img/'
       }
+    ]),
+    new CopyWebpackPlugin([
+      {
+        from: path.join(__dirname, '../example/htmlExample/'),
+        to: 'htmlExample/'
+      },
+      {
+        from: path.join(__dirname, '../asset/'),
+        to: 'asset/'
+      }
     ])
   ],
   resolve: {

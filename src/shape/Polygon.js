@@ -9,6 +9,17 @@ export default class Polygon extends BaseShape {
   constructor (ctx, properties, imgcoordinates) {
     super(ctx, properties, imgcoordinates)
 
+    this.ctx = ctx.ctx
+    this.img = ctx.img
+
+    this.state = 'show' // 'selected' // [show, selected, hover]
+    this.tempPoint = null // for mouse move
+    this.movePoint = null
+    this.drapPoint = null
+    this.props = JSON.parse(JSON.stringify(properties || {}))
+
+    this.changePorprities()
+
     this.uuid = `Polygon_${Util.guid()}`
     this.type = 'Polygon'
     this.geojson = {

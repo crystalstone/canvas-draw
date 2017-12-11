@@ -6,16 +6,17 @@ import Util from '../util/util'
 
 export default class BaseShape {
   constructor (ctx, properties, imgcoordinates) {
-    this.ctx = ctx.ctx
-    this.img = ctx.img
-
-    this.state = 'show' // 'selected' // [show, selected, hover]
-    this.tempPoint = null // for mouse move
-    this.movePoint = null
-    this.drapPoint = null
-    this.props = JSON.parse(JSON.stringify(properties || {}))
-
-    this.changePorprities()
+    // ie 8 extends is error, so annotate this
+    // this.ctx = ctx.ctx
+    // this.img = ctx.img
+    //
+    // this.state = 'show' // 'selected' // [show, selected, hover]
+    // this.tempPoint = null // for mouse move
+    // this.movePoint = null
+    // this.drapPoint = null
+    // this.props = JSON.parse(JSON.stringify(properties || {}))
+    //
+    // this.changePorprities()
   }
 
   /**

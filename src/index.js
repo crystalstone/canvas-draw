@@ -84,21 +84,6 @@ export default class Hope {
     )
   }
 
-  clear () {
-    this.featureList = {}
-    this.currentFeature = null
-    this.filter = null
-    this.hoverFeatureUuid = null
-    if (this.model) {
-      this.changeOptState('prepared')
-    } else {
-      this.changeOptState('prepareing')
-    }
-    this.ctx && this.ctx.clearRect && this.ctx.clearRect(
-      0, 0, this.canvas.width, this.canvas.height
-    )
-  }
-
   /**
   * get all data
   */
@@ -141,7 +126,12 @@ export default class Hope {
     this.container.style.position = 'relative'
     this.container && this.container.appendChild(canvas)
     this.canvas = canvas
+
+    if (!this.canvas.getContext && window.excanvas) {
+      window.excanvas.init(this.canvas)
+    }
     this.ctx = this.canvas.getContext('2d')
+
   }
 
   /**
@@ -165,6 +155,9 @@ export default class Hope {
           imgCanvas.id = `${(new Date()).getTime()}_img_canvas`
           this.container && this.container.insertBefore(imgCanvas, this.canvas)
           this.imgCanvas = imgCanvas
+          if (!this.imgCanvas.getContext && window.excanvas) {
+            window.excanvas.init(this.imgCanvas)
+          }
           this.imgCtx = this.imgCanvas.getContext('2d')
         }
         this.img = img
@@ -261,6 +254,12 @@ export default class Hope {
   * add event to canvas
   */
   initEvent () {
+    if (navigator.appName === 'Microsoft Internet Explorer') { // 判断是否是IE浏览器
+      if (navigator.userAgent.match(/Trident/i) && navigator.userAgent.match(/MSIE 8.0/i)) { // 判断浏览器内核是否为Trident内核IE8.0
+        return
+      }
+    }
+
     this.container.addEventListener('click', (e) => { this.clickHandler(e) })
     this.container.addEventListener('dblclick', (e) => { this.dblclickHandler(e) })
     this.container.addEventListener('mousemove', (e) => { this.mouseMoveHandler(e) })

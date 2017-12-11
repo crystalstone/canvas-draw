@@ -1,5 +1,25 @@
 a library for canvas to draw basic shape, such as, polygon...
 
+## 0. 支持ie8
+
+在html的头部加入
+
+```
+<!--[if IE 8]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.7/es5-shim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.7/es5-sham.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/json3/3.3.2/json3.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/es6-shim/0.34.2/es6-shim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/es6-shim/0.34.2/es6-sham.min.js"></script>
+  <script type="text/javascript" src="./excanvas.js"></script>
+<![endif]-->
+
+```
+
+jquery 要在2.0以下版本
+excanvas.js 的代码，在htmlExample文件夹中
+
+
 ## 1. prepare environment to run the example
 
 install node and npm
